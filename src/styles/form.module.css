@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;500&display=swap');
+
+.form{
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.26);
+    padding: 20px 20px;
+    margin-top: 40px;
+}
+.formHeader{
+    position: relative;
+    width: 100%;
+    display: flex;
+    background-color:  #00796B;
+    justify-content: space-between;
+    padding: 10px;
+    color: white;
+    font-family: 'Roboto';
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.firstContent{
+    display: grid;
+    margin-top: 15px;
+    grid-template-columns: 2fr 1fr 1fr;
+}
+.secondContent{
+    display: grid;
+    margin-top: 15px;
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 40px;
+}
+
+.inpSelect, .inpName{
+    width: 95%;
+    margin: 0 10px;
+}
+.inpDate{
+    width: 95%;
+}
+.txtAObs{
+    width: 100%;
+}
+
+.btnSave{
+    background-color: #00A98E;
+    color: white;
+}
+
+.btnSave:hover{
+    background-color: #00A98E;
+    color: white;
+}
