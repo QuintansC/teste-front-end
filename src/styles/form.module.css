@@ -61,3 +61,17 @@
     background-color: #00A98E;
     color: white;
 }
+
+/*Mobile*/
+
+@media (max-width: 768px) {
+    .inpName{
+        width: 100% !important;
+    }
+    .firstContent{
+        display: flex;
+        margin-top: 15px;
+        flex-direction: column;
+        grid-template-columns: 2fr 1fr 1fr;
+    }
+}
