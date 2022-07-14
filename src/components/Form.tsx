@@ -1,74 +1,16 @@
-/*  eslint-disable */
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { Button, Input, Select, FormControl, TextareaAutosize } from "@material-ui/core";
-import { useProps, useLab } from "../hooks";
+import { useForm, Controller } from "react-hook-form";
+import { Button, Input, InputLabel, MenuItem, Select, TextareaAutosize, TextField } from "@mui/material";
 
 import styles from '../styles/form.module.css'
-import { useEffect, useState } from "react";
+import useHooks from "../hooks";
+import { style } from "@mui/system";
 
-interface FormProps {
-  onSubmit: React.FormEventHandler<HTMLFormElement>;
-}
-
-type FormValues = {
-  nome: string,
-  dataInicial: Date,
-  dataFinal: Date,
-  infosPropriedade: {
-      id: number,
-      nome: string
-  },
-  cnpj: string,
-  laboratorio: {
-      id: number,
-      nome: string
-  },
-  observacoes: string
-}
-
-const Formulario:React.FC<FormProps> = ()=>{
+const Formulario: React.FC<FormProps> = ()=>{
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>();
-  const onSubmit: SubmitHandler<FormValues> = data => {console.log(data)}
-
-  const { props, handlePropsChange } = useProps()
-  const { lab, handleLabChange } = useLab()
-
-  const [data, setData] = useState({
-    prop: [],
-    lab: []
-  })
-
-  const { control } = useForm({
-    defaultValues: {
-      name: '',
-      dataInicial: '',
-      dataFinal: '',
-      properties: {},
-      lab: {},
-      observacoes: '',
-      save: {}
-    }
-  });
-
-  const fetchDados = async ()=>{
-    const teste = await fetch('http://localhost:5000/empresas').then((response)=>{
-      return response.json()
-    })
-    const teste2 = await fetch('http://localhost:5000/laboratorios').then((response)=>{
-      return response.json()
-    })
-    setData({
-      prop: teste,
-      lab: teste2
-    })
-  }
-
-  useEffect(()=>{
-    fetchDados()
-  }, [])
+  const [ onSubmit, data, control ] = useHooks()
   
   return (
-    <FormControl className={styles.form} fullWidth={true} onSubmit={handleSubmit(onSubmit)}>
+    <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
       <section className={styles.formHeader}>
         <h2>Teste front-end</h2>
         <Controller
@@ -77,63 +19,93 @@ const Formulario:React.FC<FormProps> = ()=>{
           render={() => <Button className={styles.btnSave} type="submit"> Salvar </Button>}
         />
       </section>
-      <section className={styles.firstContent}>
-      <Controller
-          name="name"
-          control={control}
-          render={() => <Input className={styles.inpName} placeholder="Nome" {...register("nome")} />}
-        />
-       
-      <Controller
-        name="dataInicial"
-        control={control}
-        render={() => <Input className={styles.inpDate} type="date" {...register("dataInicial", { required: true})} />}
-      />
-      {errors.dataInicial && <span>This field is required</span>}
-       <Controller
-        name="dataFinal"
-        control={control}
-        render={() => <Input className={styles.inpDate} type="date" {...register("dataFinal", { required: true})} />}
-      />
-       {errors.dataFinal && <span>Esse campo é obrigatório</span>}
-      </section>
-      <section className={styles.secondContent}>
-        <Controller
-          name="properties"
-          control={control}
-          render={() => 
-            <Select className={styles.inpSelect} renderValue={()=> props} onChange={handlePropsChange} label="cnpj">
-              {data.prop.map((obj: any)=>(
-                <>
-                  <option value={1}>{obj.nome}</option>
-                  <span>{obj.cnpj}</span>
-                  <hr />
+      <section className={styles.container}>
+        <section className={styles.firstContent}>
+          <Controller
+            name="name"
+            control={control}
+            render={() => <TextField id="outlined-basic" label="Nome *" variant="outlined" className={styles.inpName} placeholder="Nome" {...register("nome")} />}
+          />
+          <Controller
+            name="dataInicial"
+            control={control}
+            render={() => <div className={styles.dateInicial}>
+              <InputLabel htmlFor="dataInicial">Data Inicial</InputLabel>
+              <Input id="dataInicial" className={styles.inpDate} type="date" {...register("dataInicial", { required: true})} />
+            </div>}
+          />
+          <Controller
+            name="dataFinal"
+            control={control}
+            render={() => <div className={styles.dateFinal}> 
+              <InputLabel htmlFor="dataFinal">Data Final</InputLabel>
+              <Input id="dataFinal" className={styles.inpDate} type="date" {...register("dataFinal", { required: true})} />
+            </div>
+            }
+          />
+        </section>
+        
+          <section className={styles.secondContent}>
+            <Controller
+              name="empresa"
+              control={control}
+              render={({field:{ onChange, value }}) => 
+                <>                  
+                  <TextField 
+                    select 
+                    id="outlined-basic" 
+                    label="Empresa" 
+                    variant="outlined" 
+                    {...register("empresa")} 
+                    className={styles.inpSelect} 
+                    value={value||''} 
+                    onChange={onChange}
+                  >
+                    {data.prop.map((obj: empresas, index: number)=>(
+                      <MenuItem 
+                        className={styles.inpSelect} 
+                        value={obj.nome}
+                        data-value={index}
+                        >
+                        {obj.nome}
+                        <span>{obj.cnpj}</span>
+                      </MenuItem>
+                    ))}
+                  </TextField>
                 </>
-              ))}
-            </Select>
-          }
-        />
-        <Controller
-          name="lab"
-          control={control}
-          render={() => 
-            <Select className={styles.inpSelect} renderValue={()=>lab} onChange={handleLabChange}>
-              {data.lab.map((obj: any)=>(
-                <>
-                  <option value={1}>{obj.nome}</option>
-                  <hr />
+              }
+            />
+            <Controller
+              name="laboratorio"
+              control={control}
+              render={({field:{ onChange, value }}) => 
+              <>
+                <TextField 
+                select 
+                id="outlined-basic" 
+                label="Laboratorios" 
+                variant="outlined" 
+                {...register("laboratorio")} className={styles.inpSelect} value={value||''} onChange={onChange}>
+                  {data.prop.map((obj: laboratorios, index: number)=>(
+                    <MenuItem 
+                      className={styles.inpSelect} 
+                      value={obj.nome}
+                    >
+                      {obj.nome}
+                    </MenuItem>
+                  ))}
+                </TextField>
                 </>
-              ))}
-            </Select>
-          }
+              }
+            />
+        </section>
+        <Controller
+          name="observacoes"
+          control={control}
+          render={() => <TextareaAutosize className={styles.txtAObs}  minRows={6} placeholder="Observações" {...register("observacoes")} />}
         />
       </section>
-      <Controller
-        name="observacoes"
-        control={control}
-        render={() => <TextareaAutosize className={styles.txtAObs}  minRows={6} placeholder="Observações" {...register("observacoes")} />}
-      />
-    </FormControl>
+    </form>
   );
 }
 
