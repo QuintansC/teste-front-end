@@ -1,9 +1,8 @@
 import { useForm, Controller } from "react-hook-form";
-import { Button, Input, InputLabel, MenuItem, Select, TextareaAutosize, TextField } from "@mui/material";
+import { Button, Input, InputLabel, MenuItem, TextareaAutosize, TextField } from "@mui/material";
 
 import styles from '../styles/form.module.css'
 import useHooks from "../hooks";
-import { style } from "@mui/system";
 
 const Formulario: React.FC<FormProps> = ()=>{
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>();
